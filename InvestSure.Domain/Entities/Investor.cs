@@ -7,6 +7,9 @@ namespace InvestSure.Domain.Entities
         public string Name { get; set; }
         public string Nacionality { get; set; }
         public DateOnly BirthDate { get; set; }
+        public string Email { get; set; }
+        public Byte[] PasswordHash { get; set; }
+        public Byte[] PasswordSalt { get; set; }
         public IEnumerable<Account> accounts { get; set; } = new List<Account>();
 
     }

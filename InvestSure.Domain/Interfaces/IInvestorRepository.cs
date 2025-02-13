@@ -9,5 +9,6 @@ namespace InvestSure.Domain.Interfaces
 {
     public interface IInvestorRepository : IBaseRepository<Investor>
     {
+        Task<Investor> GetByEmail(string email);
     }
 }

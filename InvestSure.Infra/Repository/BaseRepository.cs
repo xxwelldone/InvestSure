@@ -4,7 +4,6 @@ using Dapper;
 using InvestSure.Domain.Interfaces;
 using InvestSure.Infra.Data;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 
 
 namespace InvestSure.Infra.Repository
@@ -15,7 +14,7 @@ namespace InvestSure.Infra.Repository
 
         protected DBSession Session;
         protected string _tableName = typeof(T).Name;
-        IConfiguration _configuration;;
+        IConfiguration _configuration;
 
         public BaseRepository(DBSession session)
         {

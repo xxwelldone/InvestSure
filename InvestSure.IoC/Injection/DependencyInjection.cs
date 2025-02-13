@@ -1,9 +1,15 @@
 ﻿
+using System.Text;
+using InvestSure.App.Interfaces;
+using InvestSure.App.Mappings;
+using InvestSure.App.Services;
 using InvestSure.Domain.Interfaces;
 using InvestSure.Infra.Data;
 using InvestSure.Infra.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace InvestSure.IoC.Injection
@@ -45,7 +51,31 @@ namespace InvestSure.IoC.Injection
             services.AddScoped<IInvestorRepository, InvestorRepository>();
             services.AddScoped<IInvestimentRepository, InvestimentRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IloginService, LoginService>();
+            services.AddScoped<IAuthenticationService, AuthenticateService>();
             services.AddScoped<DBSession>();
+            services.AddAutoMapper(typeof(MappingDTO));
+
+            services.AddAuthentication(opt =>
+            {
+
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["jwt:issuer"],
+                    ValidAudience = configuration["jwt:audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:secretkey"])
+
+                    )
+
+                };
+            });
 
             return services;
 

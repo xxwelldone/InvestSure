@@ -8,5 +8,10 @@ namespace InvestSure.Domain.Interfaces
 {
     public interface IBaseRepository<T>
     {
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
+        Task<int> CreateAsync(T entity);
+        Task Update(T entity);
+
     }
 }
