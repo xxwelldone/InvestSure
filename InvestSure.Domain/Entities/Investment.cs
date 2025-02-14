@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace InvestSure.Domain.Entities
 {
-    public class Investiment : BaseEntity
+    public class Investment : BaseEntity
     {
 
-        public string Account_Id { get; set; }
+        public Guid Account_Id { get; set; }
         public Account Account { get; set; }
         public string Investiment_Type { get; set; }
         public string AssetName { get; set; }

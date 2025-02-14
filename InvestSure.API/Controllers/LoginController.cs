@@ -16,11 +16,11 @@ namespace InvestSure.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<ResponseInvestorDTO>> Create(CreateInvestorDTO usuarioCreateDTO)
+        public async Task<ActionResult<InvestorResponseDTO>> Create(InvestorCreateDTO usuarioCreateDTO)
         {
             try
             {
-                ResponseInvestorDTO usuarioResponseDTO = await _loginService.CreateAsync(usuarioCreateDTO);
+                InvestorResponseDTO usuarioResponseDTO = await _loginService.CreateAsync(usuarioCreateDTO);
                 return Ok(usuarioResponseDTO);
 
             }

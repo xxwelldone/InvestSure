@@ -3,7 +3,7 @@
 
 namespace InvestSure.App.Dtos
 {
-    public class CreateInvestorDTO
+    public class InvestorCreateDTO
     {
         public string Name { get; set; }
         public string Nacionality { get; set; }

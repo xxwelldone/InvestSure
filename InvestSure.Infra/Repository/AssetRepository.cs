@@ -5,9 +5,9 @@ using InvestSure.Infra.Data;
 
 namespace InvestSure.Infra.Repository
 {
-    public class InvestimentRepository : BaseRepository<Investment>, IInvestimentRepository
+    public class AssetRepository : BaseRepository<Asset>, IAssetRepository
     {
-        public InvestimentRepository(DBSession session) : base(session)
+        public AssetRepository(DBSession session) : base(session)
         {
         }
     }

@@ -7,6 +7,7 @@ using InvestSure.App.Dtos;
 using InvestSure.App.Interfaces;
 using InvestSure.Domain.Entities;
 using InvestSure.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace InvestSure.App.Services
 {
@@ -15,23 +16,27 @@ namespace InvestSure.App.Services
         private readonly IMapper _mappingToDTO;
         private readonly IAuthenticationService _authenticate;
         private readonly IInvestorRepository _investorRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoginService(IMapper mappingToDTO, IAuthenticationService authenticate, IInvestorRepository investorRepository)
+
+        public LoginService(IMapper mappingToDTO, IAuthenticationService authenticate, IInvestorRepository investorRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _mappingToDTO = mappingToDTO;
             _authenticate = authenticate;
             _investorRepository = investorRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<ResponseInvestorDTO> CreateAsync(CreateInvestorDTO investor)
+        public async Task<InvestorResponseDTO> CreateAsync(InvestorCreateDTO investor)
         {
             Investor user = _mappingToDTO.Map<Investor>(investor);
-
 
             bool userExist = await _authenticate.UserExists(user.Email);
 
             if (userExist)
             {
+
                 throw new Exception("Usuário já cadastrado no sistema");
             }
 
@@ -40,10 +45,10 @@ namespace InvestSure.App.Services
             byte[] passwordSalt = crypt.Key;
             user.PasswordSalt = passwordSalt;
             user.PasswordHash = passwordHash;
-             await _investorRepository.CreateAsync(user);
+            await _investorRepository.CreateAsync(user);
             Investor investorCreated = await _investorRepository.GetByEmail(user.Email);
 
-            ResponseInvestorDTO responseDTO = _mappingToDTO.Map<ResponseInvestorDTO>(investorCreated);
+            InvestorResponseDTO responseDTO = _mappingToDTO.Map<InvestorResponseDTO>(investorCreated);
 
             return responseDTO;
 
@@ -62,7 +67,19 @@ namespace InvestSure.App.Services
                 throw new Exception("Usuário ou senha inválidos");
             }
             string token = _authenticate.GenerateToken(user);
-            return new AuthenticatedDTO { Email = loginDTO.Email,  Token = token };
+            return new AuthenticatedDTO { Email = loginDTO.Email, Token = token };
+
+        }
+        public async Task<Investor> GetCurrentUserAsync()
+        {
+            Guid userId = Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst("id").Value);
+            Investor investor = await _investorRepository.GetByIdAsync(userId);
+            if (investor == null)
+            {
+                throw new Exception("Usuário não encontrado");
+
+            }
+            return investor;
 
         }
     }

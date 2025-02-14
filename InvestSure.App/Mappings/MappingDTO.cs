@@ -8,8 +8,9 @@ namespace InvestSure.App.Mappings
     {
         public MappingDTO()
         {
-            CreateMap<CreateInvestorDTO, Investor>();
-            CreateMap<Investor, ResponseInvestorDTO>();
+            CreateMap<InvestorCreateDTO, Investor>()
+             .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate.ToDateTime(new TimeOnly(0, 0))));
+            CreateMap<Investor, InvestorResponseDTO>();
         }
     }
 }

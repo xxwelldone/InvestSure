@@ -10,15 +10,16 @@ namespace InvestSure.Infra.Data
     public class DBSession : IDisposable
     {
 
-        public IDbConnection DbConnection { get;}
-        public IDbTransaction Transaction { get; private set;  }
+        public IDbConnection DbConnection { get; }
+        public IDbTransaction Transaction { get; private set; }
+
 
         public DBSession(IConfiguration configuration)
         {
             DbConnection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
             DbConnection.Open();
         }
-
+        
         public void BeginTransaction()
         {
             Transaction = DbConnection.BeginTransaction();
@@ -30,7 +31,7 @@ namespace InvestSure.Infra.Data
         public void Rollback()
         {
             Transaction?.Rollback();
-            Transaction = null;
+            Dispose();
         }
         public void Dispose()
         {

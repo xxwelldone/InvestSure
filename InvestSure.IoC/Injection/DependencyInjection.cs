@@ -53,8 +53,12 @@ namespace InvestSure.IoC.Injection
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IloginService, LoginService>();
             services.AddScoped<IAuthenticationService, AuthenticateService>();
+            services.AddScoped<IAssetRepository, AssetRepository>();
+            services.AddScoped<IAssetService, AssetService>();
+
             services.AddScoped<DBSession>();
             services.AddAutoMapper(typeof(MappingDTO));
+            services.AddHttpContextAccessor();
 
             services.AddAuthentication(opt =>
             {

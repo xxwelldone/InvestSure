@@ -14,7 +14,6 @@ namespace InvestSure.Infra.Repository
 
         protected DBSession Session;
         protected string _tableName = typeof(T).Name;
-        IConfiguration _configuration;
 
         public BaseRepository(DBSession session)
         {
@@ -22,40 +21,44 @@ namespace InvestSure.Infra.Repository
         }
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            using (var connection = Session.DbConnection)
-            {
-                string sql = $@"SELECT * from public.{_tableName}";
-                IEnumerable<T> results = await connection.QueryAsync<T>(sql);
-                return results;
-            }
+
+            string sql = $@"SELECT * from public.{_tableName}";
+            IEnumerable<T> results = await Session.DbConnection.QueryAsync<T>(sql);
+
+            return results;
+
         }
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
-            using (var connection = Session.DbConnection)
-            {
-                string sql = $@" SELECT * from public.{_tableName} WHERE id = @id";
-                T result = await connection.QueryFirstOrDefaultAsync<T>(sql, new { id });
-                return result;
-            }
+
+
+
+            string sql = $@" SELECT * from public.{_tableName} WHERE id = @id";
+            T result = await Session.DbConnection.QueryFirstOrDefaultAsync<T>(sql, new { id });
+            return result;
+
         }
-        public async Task<int> CreateAsync(T entity)
+        public async Task<Guid> CreateAsync(T entity)
         {
             try
             {
-                using (var connection = Session.DbConnection)
-                {
-                    Session.BeginTransaction();
+                Session.BeginTransaction();
 
-                    IEnumerable<string> properties = typeof(T).GetProperties().Where(x => x.Name != "id").Select(x => x.Name);
-                    string columns = string.Join(", ", properties);
-                    string values = string.Join(", ", properties.Select(x => "@" + x));
+                IEnumerable<string> properties = typeof(T).GetProperties()
+                    .Where(x => x.Name != "Id" && x.Name != "Accounts")
+                    .Select(x => x.Name);
 
-                    string sql = $@"INSERT INTO public.{_tableName}({columns}) VALUES ({values}) RETURNING id";
-                    int id = await connection.QueryFirstOrDefault(sql, entity);
-                    Session.Commit();
-                    return id;
 
-                }
+                string columns = string.Join(", ", properties);  
+                string values = string.Join(", ", properties.Select(x => "@" + x));  
+
+                string sql = $@"INSERT INTO public.{_tableName} ({columns}) VALUES ({values}) RETURNING id";
+
+                Guid id = await Session.DbConnection.QueryFirstOrDefaultAsync<Guid>(sql, entity); 
+
+                Session.Commit();
+
+                return id;  
             }
             catch (Exception ex)
             {
@@ -63,19 +66,20 @@ namespace InvestSure.Infra.Repository
                 throw new Exception(ex.Message);
             }
         }
+
         public async Task Update(T entity)
         {
             try
             {
-                using (var connection = Session.DbConnection)
-                {
-                    Session.BeginTransaction();
-                    IEnumerable<string> properties = typeof(T).GetProperties().Where(x => x.Name != "id").Select(x => x.Name);
-                    string sets = string.Join(", ", properties.Select(x => $"{x} = @{x}"));
-                    string sql = $@"UPDATE public.{_tableName} SET {sets} WHERE id = @id";
-                    connection.Execute(sql, entity);
-                    Session.Commit();
-                }
+                Session.BeginTransaction();
+
+                IEnumerable<string> properties = typeof(T).GetProperties().Where(x => x.Name != "id").Select(x => x.Name);
+                string sets = string.Join(", ", properties.Select(x => $"{x} = @{x}"));
+                string sql = $@"UPDATE public.{_tableName} SET {sets} WHERE id = @id";
+                Session.DbConnection.Execute(sql, entity);
+                Session.Commit();
+
+
             }
             catch (Exception ex)
             {

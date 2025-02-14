@@ -16,13 +16,12 @@ namespace InvestSure.Infra.Repository
         }
         public async Task<Investor> GetByEmail(string email)
         {
-            using (var connection = Session.DbConnection)
-            {
+           
                 string sql = $@"SELECT * FROM public.investor WHERE email = @email";
 
-                Investor investor = await connection.QueryFirstOrDefaultAsync<Investor>(sql, email);
+                Investor investor = await Session.DbConnection.QueryFirstOrDefaultAsync<Investor>(sql, new { email});
                 return investor;
-            }
+            
         }
 
 

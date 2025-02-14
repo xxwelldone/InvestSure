@@ -7,7 +7,7 @@ using InvestSure.Domain.Entities;
 
 namespace InvestSure.Domain.Interfaces
 {
-    public interface IInvestimentRepository : IBaseRepository<Investiment>
+    public interface IInvestimentRepository : IBaseRepository<Investment>
     {
     }
 }
