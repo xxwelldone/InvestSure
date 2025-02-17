@@ -1,6 +1,7 @@
 ﻿using InvestSure.App.Dtos;
 using InvestSure.App.Interfaces;
 using InvestSure.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace InvestSure.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InvestmentController : ControllerBase
     {
         private readonly IInvestmentService _investmentService;

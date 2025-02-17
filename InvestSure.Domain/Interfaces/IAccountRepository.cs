@@ -9,6 +9,6 @@ namespace InvestSure.Domain.Interfaces
 {
     public interface IAccountRepository : IBaseRepository<Account>
     {
-        Task<Account> findByInvestorIdAsync(Guid id);
+        Task<IEnumerable<Account>> findByInvestorIdAsync(Guid investorId);
     }
 }

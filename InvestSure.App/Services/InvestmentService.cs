@@ -16,23 +16,28 @@ namespace InvestSure.App.Services
         private readonly IloginService _loginService;
         private readonly IAssetRepository _assetRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly IExternalAPIService _externalAPIService;
 
         private readonly IMapper _mapper;
 
-        public InvestmentService(IInvestimentRepository repository, IMapper mapper, IAssetRepository assetRepository,
-            IAccountRepository accountRepository)
+        public InvestmentService(IInvestimentRepository investmentrepository,
+            IloginService loginService, IAssetRepository assetRepository,
+            IAccountRepository accountRepository, IExternalAPIService externalAPIService, IMapper mapper)
         {
-            _investmentrepository = repository;
-            _mapper = mapper;
+            _investmentrepository = investmentrepository;
+            _loginService = loginService;
             _assetRepository = assetRepository;
             _accountRepository = accountRepository;
+            _externalAPIService = externalAPIService;
+            _mapper = mapper;
         }
 
         public async Task<Investment> Create(InvetmentCreateDTO createDTO)
         {
             Investor investor = await _loginService.GetCurrentUserAsync();
 
-            Account account = await _accountRepository.findByInvestorIdAsync(investor.Id);
+            IEnumerable<Account> accountList = await _accountRepository.findByInvestorIdAsync(investor.Id);
+            Account? account = accountList.FirstOrDefault(x => x.Id == createDTO.Account_Id);
 
             if (account == null)
             {
@@ -44,27 +49,36 @@ namespace InvestSure.App.Services
                 if (asset == null) { throw new Exception("Id informado para Asset não existe em nossa base"); }
 
 
-                Decimal totalAmount = asset.Price * createDTO.Quantity;
+                double doubleExchangeRate = await _externalAPIService.GetExhangeAsync(account.Currency, asset.Currency);
+                Decimal exchangeRate =  Convert.ToDecimal(doubleExchangeRate);
 
-                if (account.Amount < totalAmount)
+                Decimal amountInvested = asset.Price * createDTO.Quantity;
+                Decimal amountToBePaid = amountInvested * exchangeRate;
+
+                if (account.Amount < amountToBePaid)
                 {
                     throw new InvalidOperationException("Saldo insuficiente para realizar compra de investimento");
 
                 }
                 else
                 {
+                    account.Withdraw(amountToBePaid);
+                    await _accountRepository.Update(account);
                     Investment investment = new Investment()
                     {
                         Account_Id = account.Id,
                         Investiment_Type = asset.TypeAsset,
                         AssetName = asset.AssetName,
                         Quantity = createDTO.Quantity,
-                        TotalAmount = totalAmount,
+                        TotalAmount = amountInvested,
                         Currency = asset.Currency,
 
                     };
+                    
+                    
                     Guid id = await _investmentrepository.CreateAsync(investment);
                     Investment created = await _investmentrepository.GetByIdAsync(id);
+
                     return created;
 
                 }

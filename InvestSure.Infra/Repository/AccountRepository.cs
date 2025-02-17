@@ -11,10 +11,13 @@ namespace InvestSure.Infra.Repository
         public AccountRepository(DBSession session) : base(session)
         {
         }
-        public async Task<Account> findByInvestorIdAsync(Guid id) {
-            string sql = $@"SELECT * from public.investor where investor_id = @id";
-            return await Session.DbConnection.QueryFirstOrDefaultAsync<Account>(sql, id);
-        
+        public async Task<IEnumerable<Account>> findByInvestorIdAsync(Guid investorId)
+        {
+            string sql = $@"SELECT * from public.investor where investor_id = @investor_id";
+            IEnumerable<Account> accounts = await Session.DbConnection.QueryAsync<Account>(sql, investorId);
+            return accounts;
+
+
         }
     }
 }
