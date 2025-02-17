@@ -28,7 +28,12 @@ namespace InvestSure.Infra.Repository
                 if (response.IsSuccessStatusCode)
                 {
                     var responseToString = await response.Content.ReadAsStringAsync();
-                    ExchangeRateResponse exchangeRateResponse = JsonSerializer.Deserialize<ExchangeRateResponse>(responseToString);
+                    ExchangeRateResponse exchangeRateResponse = JsonSerializer.Deserialize<ExchangeRateResponse>(responseToString,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        }
+                        );
                     return exchangeRateResponse;
 
                 }

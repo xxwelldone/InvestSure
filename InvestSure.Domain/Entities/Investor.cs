@@ -10,7 +10,6 @@ namespace InvestSure.Domain.Entities
         public string Email { get; set; }
         public Byte[] PasswordHash { get; set; }
         public Byte[] PasswordSalt { get; set; }
-        //public IEnumerable<Account> Accounts { get; set; }
 
     }
 }

@@ -19,6 +19,21 @@ namespace InvestSure.API.Controllers
             _investmentService = investmentService;
         }
 
+        [HttpGet("{id}", Name = "GetById")]
+        public async Task<ActionResult<Investment>> GetInvestmentById(Guid id)
+        {
+            try
+            {
+                Investment investment = await _investmentService.GetByIdAsync(id);
+                return Ok(investment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message + " Inner Exception: " + ex.InnerException);
+            }
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<Investment>> BuyInvestment(InvetmentCreateDTO createDTO)
         {
@@ -28,14 +43,14 @@ namespace InvestSure.API.Controllers
                 return new CreatedAtRouteResult
                     (
                     routeName: "GetById",
-                    routeValues: investment.Id,
+                    routeValues: new  { id = investment.Id },
                     value: investment
                     );
 
             }
             catch (Exception ex)
             {
-                return BadRequest( ex.Message );
+                return BadRequest(ex.Message);
 
             }
         }

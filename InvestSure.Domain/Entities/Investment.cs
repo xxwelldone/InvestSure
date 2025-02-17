@@ -10,12 +10,12 @@ namespace InvestSure.Domain.Entities
     {
 
         public Guid Account_Id { get; set; }
-        public Account Account { get; set; }
         public string Investiment_Type { get; set; }
         public string AssetName { get; set; }
+        public Guid Asset_Id { get; set; }
         public int Quantity { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Currency {  get; set; }
-         
+        public string Currency { get; set; }
+
     }
 }

@@ -6,12 +6,12 @@ namespace InvestSure.Domain.Entities
     {
         public string? Result { get; set; }
         public string? Documentation { get; set; }
-        public string? TermsOfUse { get; set; }
-        public long? TimeLastUpdateUnix { get; set; }
-        public string? TimeLastUpdateUtc { get; set; }
-        public long? TimeNextUpdateUnix { get; set; }
-        public string? TimeNextUpdateUtc { get; set; }
-        public string? BaseCode { get; set; }
-        public Dictionary<string, double>? ConversionRates { get; set; }
+        public string? Terms_of_use { get; set; }
+        public long? Time_last_update_unix { get; set; }
+        public string? Time_last_update_utc { get; set; }
+        public long? Time_next_update_unix { get; set; }
+        public string? Time_next_update_utc { get; set; }
+        public string? Base_Code { get; set; }
+        public Dictionary<string, double>? Conversion_Rates { get; set; }
     }
 }

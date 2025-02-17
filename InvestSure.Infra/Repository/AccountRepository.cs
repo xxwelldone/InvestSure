@@ -13,10 +13,9 @@ namespace InvestSure.Infra.Repository
         }
         public async Task<IEnumerable<Account>> findByInvestorIdAsync(Guid investorId)
         {
-            string sql = $@"SELECT * from public.investor where investor_id = @investor_id";
-            IEnumerable<Account> accounts = await Session.DbConnection.QueryAsync<Account>(sql, investorId);
+            string sql = $@"SELECT * from public.account where investor_id = @investorId";
+            IEnumerable<Account> accounts = await Session.DbConnection.QueryAsync<Account>(sql, new { investorId = investorId });
             return accounts;
-
 
         }
     }

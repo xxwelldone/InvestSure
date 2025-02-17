@@ -8,8 +8,7 @@
         public string Country { get; set; }
         public string Currency { get; set; }
         public decimal Amount { get; set; }
-        public string Investor_Id { get; set; }
-        public Investor Investor { get; set; }
+        public Guid Investor_Id { get; set; }
 
         public void Withdraw(decimal withdrawn)
         {

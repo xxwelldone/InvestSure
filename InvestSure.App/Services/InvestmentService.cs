@@ -69,9 +69,11 @@ namespace InvestSure.App.Services
                         Account_Id = account.Id,
                         Investiment_Type = asset.TypeAsset,
                         AssetName = asset.AssetName,
+                        Asset_Id = asset.Id,
                         Quantity = createDTO.Quantity,
                         TotalAmount = amountInvested,
                         Currency = asset.Currency,
+                        CreatedAt = DateTime.Now
 
                     };
                     
@@ -86,6 +88,13 @@ namespace InvestSure.App.Services
 
 
             }
+
+        }
+        public async Task<Investment> GetByIdAsync(Guid id)
+        {
+            Investment investment = await _investmentrepository.GetByIdAsync(id);
+            return investment;
+
 
         }
     }

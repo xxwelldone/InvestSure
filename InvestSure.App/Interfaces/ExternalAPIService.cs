@@ -16,7 +16,7 @@ namespace InvestSure.App.Interfaces
         public async Task<double> GetExhangeAsync(string baseCurrency, string buyingCurrency)
         {
           ExchangeRateResponse exchangeRate= await _externalAPIRepository.GetAsync(baseCurrency);
-          double value =  exchangeRate.ConversionRates.FirstOrDefault(x=> x.Key == buyingCurrency).Value;
+          double value =  exchangeRate.Conversion_Rates.FirstOrDefault(x=> x.Key == buyingCurrency).Value;
 
             return value;
         }

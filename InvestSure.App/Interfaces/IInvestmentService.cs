@@ -8,5 +8,6 @@ namespace InvestSure.App.Interfaces
     public interface IInvestmentService
     {
         Task<Investment> Create(InvetmentCreateDTO createDTO);
+        Task<Investment> GetByIdAsync(Guid id);
     }
 }
